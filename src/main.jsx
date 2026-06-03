@@ -1,0 +1,621 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'aos/dist/aos.css';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import AOS from 'aos';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import './styles.css';
+
+const cars = [
+  {
+    name: 'BMW 5 Series',
+    price: '₹9,999/day',
+    seats: 4,
+    fuel: 'Petrol',
+    ac: 'AC',
+    type: 'Luxury',
+    image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80',
+    description: 'Elegant executive sedan for weddings, corporate arrivals, and premium city travel.',
+  },
+  {
+    name: 'Audi A6',
+    price: '₹8,999/day',
+    seats: 4,
+    fuel: 'Petrol',
+    ac: 'AC',
+    type: 'Luxury',
+    image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1200&q=80',
+    description: 'A refined luxury ride with quiet comfort, polished interiors, and driver service.',
+  },
+  {
+    name: 'Mercedes E-Class',
+    price: '₹11,999/day',
+    seats: 4,
+    fuel: 'Diesel',
+    ac: 'AC',
+    type: 'Luxury',
+    image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=1200&q=80',
+    description: 'A premium chauffeur-driven experience for landmark celebrations and VIP movement.',
+  },
+  {
+    name: 'Toyota Fortuner',
+    price: '₹7,499/day',
+    seats: 7,
+    fuel: 'Diesel',
+    ac: 'AC',
+    type: 'SUV',
+    image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1200&q=80',
+    description: 'Strong, spacious SUV for family tours, long routes, and comfortable outstation trips.',
+  },
+  {
+    name: 'Innova Crysta',
+    price: '₹5,999/day',
+    seats: 7,
+    fuel: 'Diesel',
+    ac: 'AC',
+    type: 'MPV',
+    image: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
+    description: 'Reliable multi-purpose comfort for airport transfers, picnics, and family functions.',
+  },
+  {
+    name: 'Swift Dzire',
+    price: '₹2,499/day',
+    seats: 4,
+    fuel: 'CNG/Petrol',
+    ac: 'AC',
+    type: 'Sedan',
+    image: 'https://motomotar.com/wp-content/uploads/2024/04/Maruti-Dzire-2024-reder.jpg?auto=format&fit=crop&w=1200&q=80',
+    description: 'Smart, economical sedan for daily bookings, quick transfers, and city errands.',
+  },
+  {
+    name: 'Kia Carens',
+    price: '₹4,499/day',
+    seats: 6,
+    fuel: 'Petrol',
+    ac: 'AC',
+    type: 'Family',
+    image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80',
+    description: 'A flexible family car with generous room for luggage, comfort, and group travel.',
+  },
+  {
+    name: 'Hyundai Creta',
+    price: '₹3,999/day',
+    seats: 5,
+    fuel: 'Diesel',
+    ac: 'AC',
+    type: 'SUV',
+    image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80',
+    description: 'Compact SUV confidence for tours, airport pickups, and weekend escapes.',
+  },
+];
+
+const features = [
+  ['bi-person-check', 'Professional Drivers'],
+  ['bi-cash-coin', 'Affordable Pricing'],
+  ['bi-headset', '24/7 Support'],
+  ['bi-stars', 'Luxury Fleet'],
+  ['bi-shield-check', 'Sanitized Cars'],
+  ['bi-clock-history', 'On-Time Pickup'],
+  ['bi-calendar2-check', 'Easy Booking'],
+  ['bi-patch-check', 'Trusted Service'],
+];
+
+const gallery = [
+  'https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1523983388277-336a66bf9bcd?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1542282088-fe8426682b8f?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
+  'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=900&q=80',
+];
+
+const testimonials = [
+  {
+    name: 'Kiran Kumar Majhi',
+    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+    text: 'The wedding car arrived spotless and exactly on time. The driver was calm, polite, and made the day easier.',
+  },
+  {
+    name: 'Sougat Swain',
+    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+    text: 'Booked an Innova for a family picnic. Transparent pricing, comfortable seats, and excellent support.',
+  },
+  {
+    name: 'Somya Behera',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+    text: 'Our airport transfers for guests were managed smoothly. Premium service without confusing charges.',
+  },
+];
+
+function App() {
+  const [selectedType, setSelectedType] = useState('All');
+  const [showTop, setShowTop] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [lightbox, setLightbox] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    AOS.init({ duration: 850, once: true, offset: 90 });
+    const loader = setTimeout(() => setLoading(false), 700);
+    const onScroll = () => setShowTop(window.scrollY > 500);
+    window.addEventListener('scroll', onScroll);
+    return () => {
+      clearTimeout(loader);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
+
+  const types = useMemo(() => ['All', ...new Set(cars.map((car) => car.type))], []);
+  const filteredCars = selectedType === 'All' ? cars : cars.filter((car) => car.type === selectedType);
+
+  const submitBooking = (event) => {
+    event.preventDefault();
+    if (!event.currentTarget.checkValidity()) {
+      event.currentTarget.classList.add('was-validated');
+      return;
+    }
+    setSubmitted(true);
+    event.currentTarget.reset();
+    event.currentTarget.classList.remove('was-validated');
+  };
+
+  return (
+    <>
+      {loading && (
+        <div className="loader" aria-label="Loading">
+          <div className="loader-ring" />
+        </div>
+      )}
+
+      <nav className="navbar navbar-expand-lg fixed-top glass-nav">
+        <div className="container">
+          <a className="navbar-brand fw-bold" href="#home">
+            <span>Company</span>Name
+          </a>
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon" />
+          </button>
+          <div className="collapse navbar-collapse" id="mainNav">
+            <ul className="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+              {[
+                ['Cars', 'fleet'],
+                ['Gallery', 'gallery'],
+                ['About', 'about'],
+                ['FAQ', 'faq'],
+              ].map(([item, target]) => (
+                <li className="nav-item" key={item}>
+                  <a className="nav-link" href={`#${target}`}>
+                    {item}
+                  </a>
+                </li>
+              ))}
+              <li className="nav-item">
+                <a className="btn btn-gold ms-lg-2" href="#booking">
+                  <i className="bi bi-calendar2-check me-2" /> Book Now
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <header id="home" className="hero">
+        <div className="hero-overlay" />
+        <div className="container hero-content">
+          <div className="row align-items-center g-4">
+            <div className="col-lg-7" data-aos="fade-right">
+              <div className="proof-badge"><i className="bi bi-star-fill" /> 4.9 rated premium rental service</div>
+              <h1>Luxury Cars for Every Special Journey</h1>
+              <p>Wedding Cars, Picnic Trips, Corporate Travel & Premium Rentals at Affordable Prices</p>
+              <div className="hero-actions">
+                <a className="btn btn-gold btn-lg" href="#booking">Book Now</a>
+                <a className="btn btn-ghost btn-lg" href="#fleet">Explore Cars</a>
+              </div>
+              <div className="hero-stamps">
+                <span><i className="bi bi-shield-check" /> Verified Drivers</span>
+                <span><i className="bi bi-fuel-pump" /> Clean Fleet</span>
+                <span><i className="bi bi-telephone" /> 24/7 Help</span>
+              </div>
+            </div>
+            <div className="col-lg-5" data-aos="fade-left">
+              <BookingForm onSubmit={submitBooking} compact />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section className="section stats-strip">
+          <div className="container">
+            <div className="row g-3 text-center">
+              {[
+                ['12K+', 'Happy Customers'],
+                ['85+', 'Cars Available'],
+                ['28K+', 'Trips Completed'],
+                ['10+', 'Years of Experience'],
+              ].map(([value, label]) => (
+                <div className="col-6 col-lg-3" key={label} data-aos="zoom-in">
+                  <div className="stat-box">
+                    <strong>{value}</strong>
+                    <span>{label}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="booking" className="section booking-section">
+          <div className="container">
+            <div className="row align-items-center g-5">
+              <div className="col-lg-5" data-aos="fade-right">
+                <span className="section-kicker">Fast enquiry</span>
+                <h2>Tell us the occasion. We will match the perfect ride.</h2>
+                <p className="section-copy">Share your route, date, passenger count, and preferred car. Our team will confirm availability and negotiate a fair quote quickly.</p>
+                <div className="contact-card">
+                  <i className="bi bi-whatsapp" />
+                  <div>
+                    <strong>Need instant help?</strong>
+                    <span>WhatsApp or call for wedding, airport, and tour bookings.</span>
+                  </div>
+                </div>
+                <div className="booking-actions">
+                  <a className="btn btn-gold btn-lg" href="#home"><i className="bi bi-calendar2-check me-2" /> Use Booking Form</a>
+                  <a className="btn btn-outline-dark btn-lg" href="tel:+919876543210"><i className="bi bi-telephone me-2" /> Call Now</a>
+                </div>
+              </div>
+              <div className="col-lg-7" data-aos="fade-left" data-aos-delay="120">
+                <div className="booking-showcase">
+                  <div className="orbit-ring ring-one" />
+                  <div className="orbit-ring ring-two" />
+                  <div className="showcase-card main-ride-card">
+                    <img src="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1100&q=85" alt="Driver opening a car door for a customer" />
+                    <div className="ride-overlay">
+                      <span>Your trip plan</span>
+                      <strong>Car + Driver + Pickup</strong>
+                    </div>
+                  </div>
+
+                  <div className="showcase-card quote-card">
+                    <i className="bi bi-lightning-charge-fill" />
+                    <strong>Quick Quote</strong>
+                    <span>price and car options</span>
+                  </div>
+                  <div className="showcase-card route-card">
+                    <i className="bi bi-geo-alt-fill" />
+                    <strong>Pickup Confirmed</strong>
+                    <span>driver reaches your location</span>
+                  </div>
+                  <div className="showcase-card price-card">
+                    <span>Best for</span>
+                    <strong>Wedding, Airport, Tours</strong>
+                    <small>and family trips</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="booking-process row g-3">
+              {[
+                ['bi-chat-left-text', 'Send Requirement', 'Use the hero booking form or call with your date, pickup point, and event type.'],
+                ['bi-car-front', 'Get Car Options', 'We suggest cars that fit your passenger count, style, route, and budget.'],
+                ['bi-patch-check', 'Confirm & Ride', 'Finalize the quote, driver, timing, and enjoy a polished rental experience.'],
+              ].map(([icon, title, text], index) => (
+                <div className="col-md-4" key={title} data-aos="fade-up" data-aos-delay={index * 90}>
+                  <div className="process-card">
+                    <i className={`bi ${icon}`} />
+                    <h3>{title}</h3>
+                    <p>{text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="fleet" className="section fleet-section">
+          <div className="container">
+            <div className="section-heading" data-aos="fade-up">
+              <span className="section-kicker">Premium fleet</span>
+              <h2>Choose a car for every plan</h2>
+              <p>Luxury sedans, spacious SUVs, family cars, and affordable daily rentals with negotiable pricing.</p>
+            </div>
+            <div className="filter-pills" data-aos="fade-up">
+              {types.map((type) => (
+                <button className={selectedType === type ? 'active' : ''} onClick={() => setSelectedType(type)} key={type}>
+                  {type}
+                </button>
+              ))}
+            </div>
+            <div className="row g-4">
+              {filteredCars.map((car, index) => (
+                <div className="col-md-6 col-xl-3" key={car.name} data-aos="fade-up" data-aos-delay={(index % 4) * 80}>
+                  <article className="car-card">
+                    <div className="car-media">
+                      <img src={car.image} alt={car.name} />
+                      <span className="badge-negotiable">Negotiable</span>
+                    </div>
+                    <div className="car-body">
+                      <div className="d-flex justify-content-between align-items-start gap-2">
+                        <h3>{car.name}</h3>
+                        <strong>{car.price}</strong>
+                      </div>
+                      <div className="car-meta">
+                        <span><i className="bi bi-people" /> {car.seats} Seats</span>
+                        <span><i className="bi bi-fuel-pump" /> {car.fuel}</span>
+                        <span><i className="bi bi-snow" /> {car.ac}</span>
+                      </div>
+                      <p>{car.description}</p>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <span className="type-chip">{car.type}</span>
+                        <a href="#booking" className="btn btn-sm btn-dark">Book Now</a>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section feature-section">
+          <div className="container">
+            <div className="section-heading" data-aos="fade-up">
+              <span className="section-kicker">Why choose us</span>
+              <h2>Premium service without premium stress</h2>
+            </div>
+            <div className="row g-3">
+              {features.map(([icon, label], index) => (
+                <div className="col-6 col-lg-3" key={label} data-aos="zoom-in" data-aos-delay={(index % 4) * 70}>
+                  <div className="feature-card">
+                    <i className={`bi ${icon}`} />
+                    <h3>{label}</h3>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="gallery" className="section gallery-section">
+          <div className="container">
+            <div className="section-heading" data-aos="fade-up">
+              <span className="section-kicker">Gallery</span>
+              <h2>Moments made better in the right car</h2>
+            </div>
+            <div className="gallery-grid">
+              {gallery.map((image, index) => (
+                <button className={`gallery-item item-${index + 1}`} key={image} onClick={() => setLightbox(image)} data-aos="fade-up">
+                  <img src={image} alt="Car rental experience" />
+                  <span><i className="bi bi-arrows-fullscreen" /></span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="section testimonial-section">
+          <div className="container">
+            <div className="section-heading" data-aos="fade-up">
+              <span className="section-kicker">Testimonials</span>
+              <h2>Trusted by families and companies</h2>
+            </div>
+            <Swiper modules={[Autoplay, Pagination, Navigation]} slidesPerView={1} spaceBetween={24} pagination navigation autoplay={{ delay: 3200 }} breakpoints={{ 768: { slidesPerView: 2 }, 1200: { slidesPerView: 3 } }}>
+              {testimonials.map((review) => (
+                <SwiperSlide key={review.name}>
+                  <article className="testimonial-card">
+                    <div className="stars">★★★★★</div>
+                    <p>{review.text}</p>
+                    <div className="reviewer">
+                      <img src={review.image} alt={review.name} />
+                      <strong>{review.name}</strong>
+                    </div>
+                  </article>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </section>
+
+        <section id="about" className="section about-section">
+          <div className="container">
+            <div className="row align-items-center g-5">
+              <div className="col-lg-6" data-aos="fade-right">
+                <img className="about-img" src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80" alt="Luxury rental car" />
+              </div>
+              <div className="col-lg-6" data-aos="fade-left">
+                <span className="section-kicker">About Company</span>
+                <h2>Safe, clean, comfortable cars for your important journeys.</h2>
+                <p className="section-copy">We provide chauffeur-driven cars for weddings, family trips, corporate travel, airport transfers, picnics, tours, and luxury events. Every booking is handled with clear communication, sanitized vehicles, polite drivers, and practical pricing.</p>
+                <div className="about-points">
+                  <span><i className="bi bi-check2-circle" /> Route planning support</span>
+                  <span><i className="bi bi-check2-circle" /> Flexible hourly and daily packages</span>
+                  <span><i className="bi bi-check2-circle" /> Luxury experience at fair rates</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="cta-band">
+          <div className="container">
+            <div className="cta-inner" data-aos="zoom-in">
+              <h2>Book Your Dream Ride Today</h2>
+              <div className="cta-actions">
+                <a className="btn btn-dark btn-lg" href="tel:+919876543210"><i className="bi bi-telephone me-2" /> Call Now</a>
+                <a className="btn btn-light btn-lg" href="#booking"><i className="bi bi-file-earmark-text me-2" /> Get Free Quote</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="faq" className="section faq-map">
+          <div className="container">
+            <div className="row g-4">
+              <div className="col-lg-6" data-aos="fade-up">
+                <span className="section-kicker">FAQ</span>
+                <h2>Quick answers before you book</h2>
+                <div className="accordion" id="faqList">
+                  {[
+                    ['Are prices negotiable?', 'Yes. Final pricing depends on car model, route, duration, date, and event requirements.'],
+                    ['Do you provide drivers?', 'Yes. Most premium and event bookings include professional chauffeur service.'],
+                    ['Can I book for outstation tours?', 'Yes. We support city transfers, tours, airport pickups, picnics, and multi-day trips.'],
+                  ].map(([question, answer], index) => (
+                    <div className="accordion-item" key={question}>
+                      <h3 className="accordion-header">
+                        <button className={`accordion-button ${index ? 'collapsed' : ''}`} type="button" data-bs-toggle="collapse" data-bs-target={`#faq${index}`}>
+                          {question}
+                        </button>
+                      </h3>
+                      <div id={`faq${index}`} className={`accordion-collapse collapse ${index ? '' : 'show'}`} data-bs-parent="#faqList">
+                        <div className="accordion-body">{answer}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="col-lg-6" data-aos="fade-up" data-aos-delay="120">
+                <div className="map-card">
+                  <iframe title="Service location map" src="https://www.google.com/maps?q=Bhubaneswar%20India&output=embed" loading="lazy" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="site-footer">
+        <div className="container">
+          <div className="row g-4">
+            <div className="col-lg-4">
+              <a className="footer-brand" href="#home"><span>Company</span>Name</a>
+              <p>Premium cars for weddings, tours, airport transfers, corporate travel, family trips, and luxury events.</p>
+              <div className="socials">
+                <a href="#" aria-label="Facebook"><i className="bi bi-facebook" /></a>
+                <a href="#" aria-label="Instagram"><i className="bi bi-instagram" /></a>
+                <a href="#" aria-label="YouTube"><i className="bi bi-youtube" /></a>
+              </div>
+            </div>
+            <div className="col-6 col-lg-2">
+              <h3>Links</h3>
+              <a href="#fleet">Cars</a>
+              <a href="#booking">Booking</a>
+              <a href="#gallery">Gallery</a>
+              <a href="#about">About</a>
+            </div>
+            <div className="col-6 col-lg-3">
+              <h3>Contact</h3>
+              <p><i className="bi bi-telephone" /> +1234567890</p>
+              <p><i className="bi bi-envelope" /> bookings@company.in</p>
+              <p><i className="bi bi-geo-alt" /> Bhubaneswar, Odisha</p>
+            </div>
+            <div className="col-lg-3">
+              <h3>Newsletter</h3>
+              <form className="newsletter">
+                <input type="email" className="form-control" placeholder="Email address" required />
+                <button className="btn btn-gold" aria-label="Subscribe"><i className="bi bi-send" /></button>
+              </form>
+            </div>
+          </div>
+          <div className="footer-bottom">© 2026 Company Car Rental. All rights reserved.</div>
+        </div>
+      </footer>
+
+      <a className="whatsapp-float" href="https://wa.me/1234567890" aria-label="Chat on WhatsApp">
+        <i className="bi bi-whatsapp" />
+      </a>
+      {showTop && (
+        <button className="top-button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Back to top">
+          <i className="bi bi-arrow-up" />
+        </button>
+      )}
+      {submitted && (
+        <div className="modal-backdrop-custom" onClick={() => setSubmitted(false)}>
+          <div className="success-modal" onClick={(event) => event.stopPropagation()}>
+            <i className="bi bi-check-circle-fill" />
+            <h2>Booking request sent</h2>
+            <p>Thanks. Our team will contact you shortly with availability and quote details.</p>
+            <button className="btn btn-gold" onClick={() => setSubmitted(false)}>Close</button>
+          </div>
+        </div>
+      )}
+      {lightbox && (
+        <div className="modal-backdrop-custom" onClick={() => setLightbox(null)}>
+          <button className="lightbox-close" aria-label="Close gallery"><i className="bi bi-x-lg" /></button>
+          <img className="lightbox-image" src={lightbox} alt="Expanded gallery view" />
+        </div>
+      )}
+    </>
+  );
+}
+
+function BookingForm({ onSubmit, compact = false }) {
+  return (
+    <form className={`booking-form needs-validation ${compact ? 'hero-form' : ''}`} onSubmit={onSubmit} noValidate>
+      <div className="form-title">
+        <i className="bi bi-calendar-heart" />
+        <div>
+          <strong>Book your car</strong>
+          <span>Quick response guaranteed</span>
+        </div>
+      </div>
+      <div className="row g-3">
+        <FloatingInput id={compact ? 'heroName' : 'name'} label="Full Name" required />
+        <FloatingInput id={compact ? 'heroEmail' : 'email'} label="Email Address" type="email" required />
+        <FloatingInput id={compact ? 'heroPhone' : 'phone'} label="Phone Number" type="tel" required />
+        <div className="col-md-6">
+          <div className="form-floating">
+            <select className="form-select" id={compact ? 'heroCar' : 'car'} required defaultValue="">
+              <option value="" disabled>Select car</option>
+              {cars.map((car) => <option key={car.name}>{car.name}</option>)}
+            </select>
+            <label htmlFor={compact ? 'heroCar' : 'car'}>Select Car</label>
+            <div className="invalid-feedback">Please select a car.</div>
+          </div>
+        </div>
+        <div className="col-md-6">
+          <div className="form-floating">
+            <select className="form-select" id={compact ? 'heroEvent' : 'event'} required defaultValue="">
+              <option value="" disabled>Event type</option>
+              {['Wedding', 'Picnic', 'Tour', 'Airport', 'Corporate', 'Other'].map((event) => <option key={event}>{event}</option>)}
+            </select>
+            <label htmlFor={compact ? 'heroEvent' : 'event'}>Event Type</label>
+            <div className="invalid-feedback">Please choose an event type.</div>
+          </div>
+        </div>
+        <FloatingInput id={compact ? 'heroPickup' : 'pickup'} label="Pickup Location" required />
+        <FloatingInput id={compact ? 'heroDate' : 'date'} label="Pickup Date" type="date" required />
+        <FloatingInput id={compact ? 'heroPassengers' : 'passengers'} label="Number of Passengers" type="number" min="1" required />
+        <div className="col-12">
+          <div className="form-floating">
+            <textarea className="form-control" id={compact ? 'heroDescription' : 'description'} placeholder="Description / Requirements" required />
+            <label htmlFor={compact ? 'heroDescription' : 'description'}>Description / Requirements</label>
+            <div className="invalid-feedback">Please add your requirements.</div>
+          </div>
+        </div>
+      </div>
+      <button className="btn btn-gold w-100 mt-3" type="submit">
+        <i className="bi bi-send-check me-2" /> Submit Enquiry
+      </button>
+    </form>
+  );
+}
+
+function FloatingInput({ id, label, type = 'text', ...props }) {
+  return (
+    <div className="col-md-6">
+      <div className="form-floating">
+        <input className="form-control" id={id} placeholder={label} type={type} {...props} />
+        <label htmlFor={id}>{label}</label>
+        <div className="invalid-feedback">Please enter a valid {label.toLowerCase()}.</div>
+      </div>
+    </div>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<App />);
