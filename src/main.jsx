@@ -12,6 +12,8 @@ import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import './styles.css';
 
+const logo = '/assets/images/logo.png';
+
 const cars = [
   {
     name: 'BMW 5 Series',
@@ -175,8 +177,8 @@ function App() {
 
       <nav className="navbar navbar-expand-lg fixed-top glass-nav">
         <div className="container">
-          <a className="navbar-brand fw-bold" href="#home">
-            <span>Company</span>Name
+          <a className="navbar-brand" href="#home" aria-label="Company Car Rental home">
+            <img className="brand-logo" src={logo} alt="Company Car Rental" />
           </a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon" />
@@ -211,7 +213,7 @@ function App() {
           <div className="row align-items-center g-4">
             <div className="col-lg-7" data-aos="fade-right">
               <div className="proof-badge"><i className="bi bi-star-fill" /> 4.9 rated premium rental service</div>
-              <h1>Luxury Cars for Every Special Journey</h1>
+              <h2>Luxury Cars for Every Special Journey</h2>
               <p>Wedding Cars, Picnic Trips, Corporate Travel & Premium Rentals at Affordable Prices</p>
               <div className="hero-actions">
                 <a className="btn btn-gold btn-lg" href="#booking">Book Now</a>
@@ -481,7 +483,7 @@ function App() {
               </div>
               <div className="col-lg-6" data-aos="fade-up" data-aos-delay="120">
                 <div className="map-card">
-                  <iframe title="Service location map" src="https://www.google.com/maps?q=Bhubaneswar%20India&output=embed" loading="lazy" />
+                  <iframe title="Service location map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3742.7173751799605!2d85.7631912!3d20.2705528!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a19a9b8f71ba331%3A0xd2c5c96061a78267!2sSM%20Travels%20-%20Self%20Drive%20Car%20rental!5e0!3m2!1sen!2sin!4v1780464900134!5m2!1sen!2sin" loading="lazy" />
                 </div>
               </div>
             </div>
@@ -493,7 +495,9 @@ function App() {
         <div className="container">
           <div className="row g-4">
             <div className="col-lg-4">
-              <a className="footer-brand" href="#home"><span>Company</span>Name</a>
+              <a className="footer-brand" href="#home" aria-label="Company Car Rental home">
+                <img className="footer-logo" src={logo} alt="Company Car Rental" />
+              </a>
               <p>Premium cars for weddings, tours, airport transfers, corporate travel, family trips, and luxury events.</p>
               <div className="socials">
                 <a href="#" aria-label="Facebook"><i className="bi bi-facebook" /></a>
