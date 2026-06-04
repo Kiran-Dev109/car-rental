@@ -14,6 +14,8 @@ import './styles.css';
 
 const logo = '/assets/images/logo.png';
 
+const footer_logo = '/assets/images/footer-logo.png';
+
 const cars = [
   {
     name: 'BMW 5 Series',
@@ -175,7 +177,7 @@ function App() {
         </div>
       )}
 
-      <nav className="navbar navbar-expand-lg fixed-top glass-nav">
+      <nav className="navbar navbar-expand-lg fixed-top glass-nav px-lg-5" style={{width:'100vw'}}>
         <div className="container">
           <a className="navbar-brand" href="#home" aria-label="Company Car Rental home">
             <img className="brand-logo" src={logo} alt="Company Car Rental" />
@@ -496,7 +498,7 @@ function App() {
           <div className="row g-4">
             <div className="col-lg-4">
               <a className="footer-brand" href="#home" aria-label="Company Car Rental home">
-                <img className="footer-logo" src={logo} alt="Company Car Rental" />
+                <img className="footer-logo" src={footer_logo} alt="Company Car Rental" />
               </a>
               <p>Premium cars for weddings, tours, airport transfers, corporate travel, family trips, and luxury events.</p>
               <div className="socials">
