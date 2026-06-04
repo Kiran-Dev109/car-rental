@@ -16,6 +16,8 @@ const logo = '/assets/images/logo.png';
 
 const footer_logo = '/assets/images/footer-logo.png';
 
+const about_img = '/assets/images/about/car.png';
+
 const cars = [
   {
     name: 'BMW 5 Series',
@@ -430,16 +432,20 @@ function App() {
           <div className="container">
             <div className="row align-items-center g-5">
               <div className="col-lg-6" data-aos="fade-right">
-                <img className="about-img" src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80" alt="Luxury rental car" />
+                <img className="about-img" src={about_img} alt="Luxury rental car" />
               </div>
               <div className="col-lg-6" data-aos="fade-left">
                 <span className="section-kicker">About Company</span>
-                <h2>Safe, clean, comfortable cars for your important journeys.</h2>
-                <p className="section-copy">We provide chauffeur-driven cars for weddings, family trips, corporate travel, airport transfers, picnics, tours, and luxury events. Every booking is handled with clear communication, sanitized vehicles, polite drivers, and practical pricing.</p>
+                <h2 className='about-heading'>Safe, clean, comfortable cars for your important journeys.</h2>
+                <p className="section-copy text-justify">we provide well-maintained self-drive cars and dependable airport and railway station transfer services in Bhubaneswar. Whether you need a vehicle for business, family travel, or a convenient pickup and drop service, we ensure a safe, comfortable, and hassle-free experience.Our fleet includes hatchbacks, sedans, SUVs, premium SUVs, family cars, and travellers to suit every travel requirement.</p>
                 <div className="about-points">
-                  <span><i className="bi bi-check2-circle" /> Route planning support</span>
                   <span><i className="bi bi-check2-circle" /> Flexible hourly and daily packages</span>
-                  <span><i className="bi bi-check2-circle" /> Luxury experience at fair rates</span>
+                  <span><i className="bi bi-check2-circle" /> Airport & Railway Station Transfers</span>
+                  <span><i className="bi bi-check2-circle" /> Well-Maintained Vehicles</span>
+                  <span><i className="bi bi-check2-circle" /> Competitive Pricing</span>
+                  <span><i className="bi bi-check2-circle" /> Trusted Customer Support</span>
+
+
                 </div>
               </div>
             </div>
@@ -449,9 +455,9 @@ function App() {
         <section className="cta-band">
           <div className="container">
             <div className="cta-inner" data-aos="zoom-in">
-              <h2>Book Your Dream Ride Today</h2>
+              <h2>Book Your Ride Today</h2>
               <div className="cta-actions">
-                <a className="btn btn-dark btn-lg" href="tel:+919876543210"><i className="bi bi-telephone me-2" /> Call Now</a>
+                <a className="btn btn-dark btn-lg" href="tel:9777082174"><i className="bi bi-telephone me-2" /> Call Now</a>
                 <a className="btn btn-light btn-lg" href="#booking"><i className="bi bi-file-earmark-text me-2" /> Get Free Quote</a>
               </div>
             </div>
@@ -468,7 +474,7 @@ function App() {
                   {[
                     ['Are prices negotiable?', 'Yes. Final pricing depends on car model, route, duration, date, and event requirements.'],
                     ['Do you provide drivers?', 'Yes. Most premium and event bookings include professional chauffeur service.'],
-                    ['Can I book for outstation tours?', 'Yes. We support city transfers, tours, airport pickups, picnics, and multi-day trips.'],
+                    ['Can I book airport or railway station transfers?', 'Yes. We provide reliable pickup and drop services to and from the airport and railway station. Advance booking is recommended to ensure vehicle availability.'],
                   ].map(([question, answer], index) => (
                     <div className="accordion-item" key={question}>
                       <h3 className="accordion-header">
@@ -503,7 +509,7 @@ function App() {
               <p>Premium cars for weddings, tours, airport transfers, corporate travel, family trips, and luxury events.</p>
               <div className="socials">
                 <a href="#" aria-label="Facebook"><i className="bi bi-facebook" /></a>
-                <a href="#" aria-label="Instagram"><i className="bi bi-instagram" /></a>
+                <a href="https://www.instagram.com/smtravels.bbsr?igsh=MXZ1azVrZ2d2OTdiag==" aria-label="Instagram"><i className="bi bi-instagram" /></a>
                 <a href="#" aria-label="YouTube"><i className="bi bi-youtube" /></a>
               </div>
             </div>
@@ -516,9 +522,9 @@ function App() {
             </div>
             <div className="col-6 col-lg-3">
               <h3>Contact</h3>
-              <p><i className="bi bi-telephone" /> +1234567890</p>
+              <p><i className="bi bi-telephone" />  +91 9777082174</p>
               <p><i className="bi bi-envelope" /> bookings@company.in</p>
-              <p><i className="bi bi-geo-alt" /> Bhubaneswar, Odisha</p>
+              <p><i className="bi bi-geo-alt" /> K7, BDA Market complex, <br /> Kalinga Nagar, Ghatikia, Bhubaneswar, Odisha, 751029</p>
             </div>
             <div className="col-lg-3">
               <h3>Newsletter</h3>
@@ -528,11 +534,11 @@ function App() {
               </form>
             </div>
           </div>
-          <div className="footer-bottom">© 2026 Company Car Rental. All rights reserved.</div>
+          <div className="footer-bottom">© 2026 SM Travels. All rights reserved.</div>
         </div>
       </footer>
 
-      <a className="whatsapp-float" href="https://wa.me/1234567890" aria-label="Chat on WhatsApp">
+      <a className="whatsapp-float" href="https://wa.me/9777082174" aria-label="Chat on WhatsApp">
         <i className="bi bi-whatsapp" />
       </a>
       {showTop && (

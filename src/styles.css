@@ -399,6 +399,7 @@ h2 {
 .section-heading p {
   color: var(--muted);
   font-size: 1.05rem;
+  text-align: justify;
 }
 
 .section-heading {
@@ -912,8 +913,12 @@ h2 {
 }
 
 .about-img {
-  aspect-ratio: 4 / 3;
+  /* aspect-ratio: 4 / 3; */
   object-fit: cover;
+}
+
+.about-heading{
+      font-size: clamp(2rem, 5vw, 2.35rem);
 }
 
 .about-points {
