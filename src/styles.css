@@ -414,6 +414,10 @@ textarea.form-control {
   margin-bottom: 10px;
 }
 
+.form-check-label {
+  color: black;
+}
+
 h2 {
   font-size: clamp(2rem, 5vw, 3.35rem);
   line-height: 1.05;
@@ -1119,6 +1123,7 @@ h2 {
 }
 
 .whatsapp-float,
+.phone-float,
 .top-button {
   position: fixed;
   z-index: 1000;
@@ -1132,6 +1137,13 @@ h2 {
   box-shadow: 0 16px 34px rgba(17, 24, 39, 0.24);
 }
 
+.phone-float {
+  right: 20px;
+  bottom: 88px;
+  background: #1f77d2;
+  font-size: 1.55rem;
+}
+
 .whatsapp-float {
   right: 20px;
   bottom: 22px;
@@ -1141,7 +1153,7 @@ h2 {
 
 .top-button {
   right: 20px;
-  bottom: 88px;
+  bottom: 154px;
   background: var(--blue-dark);
 }
 
@@ -1530,6 +1542,7 @@ h2 {
   }
 
   .whatsapp-float,
+  .phone-float,
   .top-button {
     right: 14px;
     width: 50px;

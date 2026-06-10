@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import emailjs from '@emailjs/browser';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -37,7 +38,7 @@ const cars = [
     fuel: 'Petrol/CNG',
     ac: 'AC',
     type: 'Hatchback',
-    image: 'https://images.unsplash.com/photo-1617469767053-d3b523a0b982?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://imgd-ct.aeplcdn.com/664x415/n/7a8rrua_1559471.jpg?q=80?auto=format&fit=crop&w=1200&q=80',
     description: 'Stylish premium hatchback with spacious interiors for modern families.',
   },
   {
@@ -47,7 +48,7 @@ const cars = [
     fuel: 'Petrol',
     ac: 'AC',
     type: 'Hatchback',
-    image: 'https://etimg.etb2bimg.com/photo/70566599.cms?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://stimg.cardekho.com/images/carexteriorimages/630x420/Hyundai/Grand-i10-Nios/10088/1762430432997/front-left-side-47.jpg?auto=format&fit=crop&w=1200&q=80',
     description: 'Affordable and reliable hatchback perfect for budget-conscious travelers.',
   },
   {
@@ -109,7 +110,7 @@ const cars = [
     fuel: 'Petrol/Diesel',
     ac: 'AC',
     type: 'SUV',
-    image: 'https://images.overdrive.in/wp-content/uploads/2024/02/Mahindra-Thar-Earth-Edition-900x506.jpg?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://i.pinimg.com/736x/41/65/ba/4165baadad75c1d4c1c08f0096957ee3.jpg?auto=format&fit=crop&w=1200&q=80',
     description: 'Adventure-ready SUV with rugged design for off-road expeditions and bold journeys.',
   },
   {
@@ -246,6 +247,12 @@ const cars = [
   },
 ];
 
+const carBrands = {
+  Honda: ['Amaze', 'City'],
+  Hyundai: ['Grand i10 Nios', 'i20', 'Aura', 'Verna', 'Venue', 'Creta'],
+  'Maruti Suzuki': ['Swift', 'Dzire', 'Brezza', 'Ertiga', 'Baleno', 'Fronx'],
+};
+
 const features = [
   ['bi-person-check', 'Professional Drivers'],
   ['bi-cash-coin', 'Affordable Pricing'],
@@ -287,11 +294,15 @@ const testimonials = [
 function App() {
   const [selectedType, setSelectedType] = useState('All');
   const [showTop, setShowTop] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [submissionState, setSubmissionState] = useState(null);
   const [lightbox, setLightbox] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState('home');
 
   useEffect(() => {
+    // Initialize EmailJS
+    emailjs.init('qt4MehMFptnRVP1Tc'); // Replace with your EmailJS public key
+    
     AOS.init({ duration: 850, once: true, offset: 90 });
     const loader = setTimeout(() => setLoading(false), 700);
     const onScroll = () => setShowTop(window.scrollY > 500);
@@ -311,10 +322,40 @@ function App() {
       event.currentTarget.classList.add('was-validated');
       return;
     }
-    setSubmitted(true);
-    event.currentTarget.reset();
-    event.currentTarget.classList.remove('was-validated');
+
+    // Collect form data
+    const formData = {
+      to_email: 'smtravelsbbsr@gmail.com', // Replace with your email
+      name: event.currentTarget.name?.value || event.currentTarget.heroName?.value,
+      email: event.currentTarget.email?.value || event.currentTarget.heroEmail?.value,
+      phone: event.currentTarget.phone?.value || event.currentTarget.heroPhone?.value,
+      event_type: event.currentTarget.event?.value || event.currentTarget.heroEvent?.value,
+      car_brand: event.currentTarget.carBrand?.value || event.currentTarget.heroCarBrand?.value,
+      car_model: event.currentTarget.car?.value || event.currentTarget.heroCar?.value,
+      service_type: event.currentTarget.querySelector('input[name="serviceType"]:checked')?.value || 'car-rent',
+      driver_preference: event.currentTarget.querySelector('input[name="driverPreference"]:checked')?.value || 'with-driver',
+      description: event.currentTarget.description?.value || event.currentTarget.heroDescription?.value,
+      message: `New Booking Request\n\nName: ${event.currentTarget.name?.value || event.currentTarget.heroName?.value}\nEmail: ${event.currentTarget.email?.value || event.currentTarget.heroEmail?.value}\nPhone: ${event.currentTarget.phone?.value || event.currentTarget.heroPhone?.value}\n\nEvent Type: ${event.currentTarget.event?.value || event.currentTarget.heroEvent?.value}\nService: ${event.currentTarget.querySelector('input[name="serviceType"]:checked')?.value || 'car-rent'}\nDriver: ${event.currentTarget.querySelector('input[name="driverPreference"]:checked')?.value || 'with-driver'}\nCar: ${event.currentTarget.carBrand?.value || event.currentTarget.heroCarBrand?.value} - ${event.currentTarget.car?.value || event.currentTarget.heroCar?.value}\n\nRequirements:\n${event.currentTarget.description?.value || event.currentTarget.heroDescription?.value}`
+    };
+
+    // Send email using EmailJS
+    emailjs.send('service_uv7635o', 'template_0138vzt', formData)
+      .then(() => {
+        setSubmissionState('success');
+        event.currentTarget.reset();
+        event.currentTarget.classList.remove('was-validated');
+      })
+      .catch((error) => {
+        console.error('Email send failed:', error);
+        setSubmissionState('error');
+        event.currentTarget.reset();
+        event.currentTarget.classList.remove('was-validated');
+      });
   };
+
+  if (currentPage === 'booking') {
+    return <BookingPage onBack={() => setCurrentPage('home')} onSubmit={submitBooking} />;
+  }
 
   return (
     <>
@@ -347,9 +388,9 @@ function App() {
                 </li>
               ))}
               <li className="nav-item">
-                <a className="btn btn-gold ms-lg-2" href="#booking">
+                <button className="btn btn-gold ms-lg-2" onClick={() => setCurrentPage('booking')} style={{border: 'none', cursor: 'pointer'}}>
                   <i className="bi bi-calendar2-check me-2" /> Book Now
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -365,7 +406,7 @@ function App() {
               <h2>Luxury Cars for Every Special Journey</h2>
               <p>Wedding Cars, Picnic Trips, Corporate Travel & Premium Rentals at Affordable Prices</p>
               <div className="hero-actions">
-                <a className="btn btn-gold btn-lg" href="#booking">Book Now</a>
+                <button className="btn btn-gold btn-lg" onClick={() => setCurrentPage('booking')} style={{border: 'none', cursor: 'pointer', padding: '12px 28px', fontSize: 'inherit'}}>Book Now</button>
                 <a className="btn btn-ghost btn-lg" href="#fleet">Explore Cars</a>
               </div>
               <div className="hero-stamps">
@@ -417,7 +458,7 @@ function App() {
                   </div>
                 </div>
                 <div className="booking-actions">
-                  <a className="btn btn-gold btn-lg" href="#home"><i className="bi bi-calendar2-check me-2" /> Use Booking Form</a>
+                  <button className="btn btn-gold btn-lg" onClick={() => setCurrentPage('booking')} style={{border: 'none', cursor: 'pointer'}}><i className="bi bi-calendar2-check me-2" /> Use Booking Form</button>
                   <a className="btn btn-outline-dark btn-lg" href="tel:9777082174"><i className="bi bi-telephone me-2" /> Call Now</a>
                 </div>
               </div>
@@ -504,7 +545,7 @@ function App() {
                       <p>{car.description}</p>
                       <div className="d-flex justify-content-between align-items-center">
                         <span className="type-chip">{car.type}</span>
-                        <a href="#booking" className="btn btn-sm btn-dark">Book Now</a>
+                        <button className="btn btn-sm btn-dark" onClick={() => setCurrentPage('booking')} style={{border: 'none', cursor: 'pointer'}}>Book Now</button>
                       </div>
                     </div>
                   </article>
@@ -603,7 +644,7 @@ function App() {
               <h2>Book Your Ride Today</h2>
               <div className="cta-actions">
                 <a className="btn btn-dark btn-lg" href="tel:9777082174"><i className="bi bi-telephone me-2" /> Call Now</a>
-                <a className="btn btn-light btn-lg" href="#booking"><i className="bi bi-file-earmark-text me-2" /> Get Free Quote</a>
+                <button className="btn btn-light btn-lg" onClick={() => setCurrentPage('booking')} style={{border: 'none', cursor: 'pointer'}}><i className="bi bi-file-earmark-text me-2" /> Get Free Quote</button>
               </div>
             </div>
           </div>
@@ -661,7 +702,7 @@ function App() {
             <div className="col-6 col-lg-2">
               <h3>Links</h3>
               <a href="#fleet">Cars</a>
-              <a href="#booking">Booking</a>
+              <button onClick={() => setCurrentPage('booking')} style={{display: 'block', background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.78)', cursor: 'pointer', padding: 0, margin: '0 0 9px', textDecoration: 'none'}}>Booking</button>
               <a href="#gallery">Gallery</a>
               <a href="#about">About</a>
             </div>
@@ -683,6 +724,9 @@ function App() {
         </div>
       </footer>
 
+      <a className="phone-float" href="tel:9777082174" aria-label="Call us">
+        <i className="bi bi-telephone" />
+      </a>
       <a className="whatsapp-float" href="https://wa.me/9777082174" aria-label="Chat on WhatsApp">
         <i className="bi bi-whatsapp" />
       </a>
@@ -691,13 +735,15 @@ function App() {
           <i className="bi bi-arrow-up" />
         </button>
       )}
-      {submitted && (
-        <div className="modal-backdrop-custom" onClick={() => setSubmitted(false)}>
+      {submissionState && (
+        <div className="modal-backdrop-custom" onClick={() => setSubmissionState(null)}>
           <div className="success-modal" onClick={(event) => event.stopPropagation()}>
-            <i className="bi bi-check-circle-fill" />
-            <h2>Booking request sent</h2>
-            <p>Thanks. Our team will contact you shortly with availability and quote details.</p>
-            <button className="btn btn-gold" onClick={() => setSubmitted(false)}>Close</button>
+            <i className={`bi ${submissionState === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill'}`} />
+            <h2>{submissionState === 'success' ? 'Booking request sent' : 'Booking request received'}</h2>
+            <p>{submissionState === 'success'
+              ? 'Thanks. Our team will contact you shortly with availability and quote details.'
+              : 'Thanks. Our team will contact you shortly with availability and quote details.'}</p>
+            <button className="btn btn-gold" onClick={() => setSubmissionState(null)}>Close</button>
           </div>
         </div>
       )}
@@ -711,7 +757,83 @@ function App() {
   );
 }
 
+function BookingPage({ onBack, onSubmit }) {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loader = setTimeout(() => setLoading(false), 700);
+    return () => clearTimeout(loader);
+  }, []);
+
+  return (
+    <>
+      {loading && (
+        <div className="loader" aria-label="Loading">
+          <div className="loader-ring" />
+        </div>
+      )}
+
+      <nav className="navbar navbar-expand-lg fixed-top glass-nav px-lg-5" style={{width:'100vw'}}>
+        <div className="container">
+          <button className="btn btn-link text-decoration-none" onClick={onBack} aria-label="Back to home" style={{padding: 0, marginRight: '16px'}}>
+            <i className="bi bi-arrow-left" style={{fontSize: '1.3rem', color: 'var(--blue)'}} />
+          </button>
+          <a className="navbar-brand" onClick={onBack} style={{cursor: 'pointer'}} aria-label="Company Car Rental home">
+            <img className="brand-logo" src={logo} alt="Company Car Rental" />
+          </a>
+          <div style={{marginLeft: 'auto'}} />
+        </div>
+      </nav>
+
+      <div style={{paddingTop: '80px', minHeight: '100vh', background: 'linear-gradient(135deg, #ffffff 0%, #f4f8fb 48%, #fff7e4 100%)'}}>
+        <div className="container py-5">
+          <div className="row justify-content-center">
+            <div className="col-lg-8">
+              <div style={{textAlign: 'center', marginBottom: '40px', marginTop: '20px'}}>
+                <h1 style={{fontSize: 'clamp(2rem, 5vw, 3.35rem)', fontWeight: '900', marginBottom: '12px', color: 'var(--ink)'}}>
+                  Book Your Perfect Ride
+                </h1>
+                <p style={{fontSize: '1.05rem', color: 'var(--muted)', marginBottom: '8px'}}>
+                  Fill in your details below and get instant quotes from our team
+                </p>
+              </div>
+              <div style={{background: '#fff', padding: '32px', borderRadius: '12px', boxShadow: 'var(--shadow)'}}>
+                <BookingForm onSubmit={onSubmit} compact={false} />
+              </div>
+              <div style={{textAlign: 'center', marginTop: '28px'}}>
+                <p style={{color: 'var(--muted)', marginBottom: '12px'}}>Need immediate assistance?</p>
+                <a href="tel:9777082174" className="btn btn-gold btn-lg">
+                  <i className="bi bi-telephone me-2" /> Call Us Now
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a className="phone-float" href="tel:9777082174" aria-label="Call us">
+        <i className="bi bi-telephone" />
+      </a>
+      <a className="whatsapp-float" href="https://wa.me/9777082174" aria-label="Chat on WhatsApp">
+        <i className="bi bi-whatsapp" />
+      </a>
+    </>
+  );
+}
+
 function BookingForm({ onSubmit, compact = false }) {
+  const [selectedBrand, setSelectedBrand] = useState('');
+  const [selectedCar, setSelectedCar] = useState('');
+  const [serviceType, setServiceType] = useState('car-rent');
+  const [driverPreference, setDriverPreference] = useState('with-driver');
+
+  const availableCars = selectedBrand ? carBrands[selectedBrand] : [];
+
+  const handleBrandChange = (e) => {
+    setSelectedBrand(e.target.value);
+    setSelectedCar('');
+  };
+
   return (
     <form className={`booking-form needs-validation ${compact ? 'hero-form' : ''}`} onSubmit={onSubmit} noValidate>
       <div className="form-title">
@@ -721,23 +843,15 @@ function BookingForm({ onSubmit, compact = false }) {
           <span>Quick response guaranteed</span>
         </div>
       </div>
+
       <div className="row g-3">
-        <FloatingInput id={compact ? 'heroName' : 'name'} label="Full Name" required />
-        <FloatingInput id={compact ? 'heroEmail' : 'email'} label="Email Address" type="email" required />
-        <FloatingInput id={compact ? 'heroPhone' : 'phone'} label="Phone Number" type="tel" required />
+        <FloatingInput id={compact ? 'heroName' : 'name'} name={compact ? 'heroName' : 'name'} label="Full Name" required />
+        <FloatingInput id={compact ? 'heroEmail' : 'email'} name={compact ? 'heroEmail' : 'email'} label="Email Address" type="email" required />
+        <FloatingInput id={compact ? 'heroPhone' : 'phone'} name={compact ? 'heroPhone' : 'phone'} label="Phone Number" type="tel" required />
+        
         <div className="col-md-6">
           <div className="form-floating">
-            <select className="form-select" id={compact ? 'heroCar' : 'car'} required defaultValue="">
-              <option value="" disabled>Select car</option>
-              {cars.map((car) => <option key={car.name}>{car.name}</option>)}
-            </select>
-            <label htmlFor={compact ? 'heroCar' : 'car'}>Select Car</label>
-            <div className="invalid-feedback">Please select a car.</div>
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="form-floating">
-            <select className="form-select" id={compact ? 'heroEvent' : 'event'} required defaultValue="">
+            <select className="form-select" id={compact ? 'heroEvent' : 'event'} name={compact ? 'heroEvent' : 'event'} required defaultValue="">
               <option value="" disabled>Event type</option>
               {['Wedding', 'Picnic', 'Tour', 'Airport', 'Corporate', 'Other'].map((event) => <option key={event}>{event}</option>)}
             </select>
@@ -745,17 +859,81 @@ function BookingForm({ onSubmit, compact = false }) {
             <div className="invalid-feedback">Please choose an event type.</div>
           </div>
         </div>
-        <FloatingInput id={compact ? 'heroPickup' : 'pickup'} label="Pickup Location" required />
+
+        <div className="col-md-6">
+          <div className="form-floating">
+            <select className="form-select" id={compact ? 'heroCarBrand' : 'carBrand'} name={compact ? 'heroCarBrand' : 'carBrand'} required value={selectedBrand} onChange={handleBrandChange}>
+              <option value="" disabled>Select car brand</option>
+              {Object.keys(carBrands).map((brand) => <option key={brand} value={brand}>{brand}</option>)}
+            </select>
+            <label htmlFor={compact ? 'heroCarBrand' : 'carBrand'}>Car Brand</label>
+            <div className="invalid-feedback">Please select a car brand.</div>
+          </div>
+        </div>
+
+        <div className="col-md-6">
+          <div className="form-floating">
+            <select className="form-select" id={compact ? 'heroCar' : 'car'} name={compact ? 'heroCar' : 'car'} required value={selectedCar} onChange={(e) => setSelectedCar(e.target.value)} disabled={!selectedBrand}>
+              <option value="" disabled>Select car model</option>
+              {availableCars.map((carModel) => <option key={carModel} value={carModel}>{carModel}</option>)}
+            </select>
+            <label htmlFor={compact ? 'heroCar' : 'car'}>Car Model</label>
+            <div className="invalid-feedback">Please select a car model.</div>
+          </div>
+        </div>
+
+        {/* <FloatingInput id={compact ? 'heroPickup' : 'pickup'} label="Pickup Location" required />
         <FloatingInput id={compact ? 'heroDate' : 'date'} label="Pickup Date" type="date" required />
-        <FloatingInput id={compact ? 'heroPassengers' : 'passengers'} label="Number of Passengers" type="number" min="1" required />
+        <FloatingInput id={compact ? 'heroPassengers' : 'passengers'} label="Number of Passengers" type="number" min="1" required /> */}
         <div className="col-12">
           <div className="form-floating">
-            <textarea className="form-control" id={compact ? 'heroDescription' : 'description'} placeholder="Description / Requirements" required />
+            <textarea className="form-control" id={compact ? 'heroDescription' : 'description'} name={compact ? 'heroDescription' : 'description'} placeholder="Description / Requirements" required />
             <label htmlFor={compact ? 'heroDescription' : 'description'}>Description / Requirements</label>
             <div className="invalid-feedback">Please add your requirements.</div>
           </div>
         </div>
       </div>
+
+      <div className="row g-3 my-4">
+        <div className="col-12">
+          <label style={{display: 'block', fontSize: '0.875rem', fontWeight: '600', color: 'var(--ink)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Service Type</label>
+          <div style={{display: 'flex', gap: '16px', padding: '16px', background: '#f8f9fa', borderRadius: '8px'}}>
+            <div className="form-check" style={{flex: 1}}>
+              <input className="form-check-input" type="radio" name="serviceType" id="carRent" value="car-rent" checked={serviceType === 'car-rent'} onChange={(e) => setServiceType(e.target.value)} />
+              <label className="form-check-label" htmlFor="carRent" style={{marginBottom: 0, cursor: 'pointer', fontSize: '0.95rem'}}>
+                <strong>🚗 Car Rental</strong>
+              </label>
+            </div>
+            <div className="form-check" style={{flex: 1}}>
+              <input className="form-check-input" type="radio" name="serviceType" id="traveller" value="traveller" checked={serviceType === 'traveller'} onChange={(e) => setServiceType(e.target.value)} />
+              <label className="form-check-label" htmlFor="traveller" style={{marginBottom: 0, cursor: 'pointer', fontSize: '0.95rem'}}>
+                <strong>🚐 Traveller Coach</strong>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="row g-3 mb-4">
+        <div className="col-12">
+          <label style={{display: 'block', fontSize: '0.875rem', fontWeight: '600', color: 'var(--ink)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Driver Preference</label>
+          <div style={{display: 'flex', gap: '16px', padding: '16px', background: '#f8f9fa', borderRadius: '8px'}}>
+            <div className="form-check" style={{flex: 1}}>
+              <input className="form-check-input" type="radio" name="driverPreference" id="withDriver" value="with-driver" checked={driverPreference === 'with-driver'} onChange={(e) => setDriverPreference(e.target.value)} />
+              <label className="form-check-label" htmlFor="withDriver" style={{marginBottom: 0, cursor: 'pointer', fontSize: '0.95rem'}}>
+                <strong>👤 With Driver</strong>
+              </label>
+            </div>
+            <div className="form-check" style={{flex: 1}}>
+              <input className="form-check-input" type="radio" name="driverPreference" id="withoutDriver" value="without-driver" checked={driverPreference === 'without-driver'} onChange={(e) => setDriverPreference(e.target.value)} />
+              <label className="form-check-label" htmlFor="withoutDriver" style={{marginBottom: 0, cursor: 'pointer', fontSize: '0.95rem'}}>
+                <strong>🔑 Self Drive</strong>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <button className="btn btn-gold w-100 mt-3" type="submit">
         <i className="bi bi-send-check me-2" /> Submit Enquiry
       </button>
@@ -763,11 +941,11 @@ function BookingForm({ onSubmit, compact = false }) {
   );
 }
 
-function FloatingInput({ id, label, type = 'text', ...props }) {
+function FloatingInput({ id, name, label, type = 'text', ...props }) {
   return (
     <div className="col-md-6">
       <div className="form-floating">
-        <input className="form-control" id={id} placeholder={label} type={type} {...props} />
+        <input className="form-control" id={id} name={name} placeholder={label} type={type} {...props} />
         <label htmlFor={id}>{label}</label>
         <div className="invalid-feedback">Please enter a valid {label.toLowerCase()}.</div>
       </div>
