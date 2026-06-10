@@ -591,7 +591,7 @@ function App() {
           </div>
         </section>
 
-        <section className="section testimonial-section">
+        {/* <section className="section testimonial-section">
           <div className="container">
             <div className="section-heading" data-aos="fade-up">
               <span className="section-kicker">Testimonials</span>
@@ -612,7 +612,7 @@ function App() {
               ))}
             </Swiper>
           </div>
-        </section>
+        </section> */}
 
         <section id="about" className="section about-section">
           <div className="container">
