@@ -846,7 +846,7 @@ function BookingForm({ onSubmit, compact = false }) {
 
       <div className="row g-3">
         <FloatingInput id={compact ? 'heroName' : 'name'} name={compact ? 'heroName' : 'name'} label="Full Name" required />
-        <FloatingInput id={compact ? 'heroEmail' : 'email'} name={compact ? 'heroEmail' : 'email'} label="Email Address" type="email" required />
+        <FloatingInput id={compact ? 'heroEmail' : 'email'} name={compact ? 'heroEmail' : 'email'} label="Email Address" type="email" />
         <FloatingInput id={compact ? 'heroPhone' : 'phone'} name={compact ? 'heroPhone' : 'phone'} label="Phone Number" type="tel" required />
         
         <div className="col-md-6">
